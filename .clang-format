@@ -1,0 +1,13 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+
+# Force braces around control statements, including short statements.
+InsertBraces: true
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Require and preserve a trailing blank line at EOF.
+InsertNewlineAtEOF: true
+KeepEmptyLinesAtEOF: true
+...
