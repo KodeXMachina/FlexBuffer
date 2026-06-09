@@ -1,4 +1,4 @@
-function(project_name_configure_cxx_target target)
+function(flexbuffer_configure_cxx_target target)
   set_target_properties(${target} PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
@@ -39,7 +39,7 @@ function(project_name_configure_cxx_target target)
   endif()
 endfunction()
 
-function(project_name_configure_cxx_interface_target target)
+function(flexbuffer_configure_cxx_interface_target target)
   target_compile_features(${target}
     INTERFACE
       cxx_std_20

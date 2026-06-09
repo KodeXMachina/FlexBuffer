@@ -84,4 +84,4 @@ python3 scripts/rename_project.py my_library --dry-run
 python3 scripts/rename_project.py my_library
 ```
 
-The script replaces `project_name` in text files, replaces export macro tokens such as `PROJECT_NAME_EXPORT`, replaces template header guards such as `PROJECT_NAME_PROJECT_NAME_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template. It does not replace CMake's `${PROJECT_NAME}` variable. Use `--dry-run` first, then run `python3 scripts/quality.py check` after renaming.
+The script replaces `flexbuffer` in text files, replaces export macro tokens such as `FLEXBUFFER_EXPORT`, replaces template header guards such as `FLEXBUFFER_FLEXBUFFER_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template. It does not replace CMake's `${PROJECT_NAME}` variable. Use `--dry-run` first, then run `python3 scripts/quality.py check` after renaming.

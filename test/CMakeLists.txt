@@ -11,7 +11,7 @@ target_link_libraries(${PROJECT_NAME}_test
     GTest::gtest_main
 )
 
-project_name_configure_cxx_target(${PROJECT_NAME}_test)
+flexbuffer_configure_cxx_target(${PROJECT_NAME}_test)
 
 if(WIN32)
   # Make shared-library DLLs available before GTest post-build discovery runs.
