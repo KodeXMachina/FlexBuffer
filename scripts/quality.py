@@ -17,7 +17,8 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 BUILD_DIR = ROOT_DIR / "build" / "quality"
 HEADER_SMOKE_DIR = BUILD_DIR / "header_smoke"
 CXX_HEADER_SUFFIXES = (".h", ".hh", ".hpp", ".hxx")
-CXX_SOURCE_SUFFIXES = (".cc", ".cpp", ".cxx")
+CXX_SOURCE_SUFFIXES = (".cc",)
+DISALLOWED_CXX_SOURCE_SUFFIXES = (".cpp", ".cxx")
 CXX_SUFFIXES = (*CXX_HEADER_SUFFIXES, *CXX_SOURCE_SUFFIXES)
 STRICT_CXX20_FLAGS = {"-std=c++20", "-std:c++20", "/std:c++20"}
 CMAKE_CONFIGURE_ARGS_ENV = "CPP_DEV_CMAKE_CONFIGURE_ARGS"
@@ -132,6 +133,15 @@ def collect_project_files(suffixes: tuple[str, ...]) -> list[str]:
         and path.suffix in suffixes
         and is_project_owned_file(path)
     ]
+
+
+def verify_source_suffixes() -> None:
+    disallowed_files = collect_project_files(DISALLOWED_CXX_SOURCE_SUFFIXES)
+    if disallowed_files:
+        raise SystemExit(
+            "Project-owned C++ source files must use the .cc suffix. Offending files:\n"
+            + "\n".join(f"  {path}" for path in disallowed_files)
+        )
 
 
 def compile_database_entries() -> list[dict[str, object]] | None:
@@ -528,6 +538,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    verify_source_suffixes()
     try:
         args.func(args)
     except subprocess.CalledProcessError as error:

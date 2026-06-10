@@ -53,7 +53,9 @@ python scripts/quality.py check
 The script walks the whole repository and includes project-owned C++ files with these suffixes:
 
 - Headers: `.h`, `.hh`, `.hpp`, `.hxx`
-- Sources: `.cc`, `.cpp`, `.cxx`
+- Sources: `.cc`
+
+Project-owned C++ source files using `.cpp` or `.cxx` fail the quality gate; rename them to `.cc`.
 
 It skips common build, dependency, generated, and vendor directories such as `build/`, `out/`, `external/`, `third_party/`, and `vendor/`.
 
@@ -84,4 +86,4 @@ python3 scripts/rename_project.py my_library --dry-run
 python3 scripts/rename_project.py my_library
 ```
 
-The script replaces `flexbuffer` in text files, replaces export macro tokens such as `FLEXBUFFER_EXPORT`, replaces template header guards such as `FLEXBUFFER_FLEXBUFFER_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template. It does not replace CMake's `${PROJECT_NAME}` variable. Use `--dry-run` first, then run `python3 scripts/quality.py check` after renaming.
+The script replaces `flexbuf` in text files, replaces export macro tokens such as `FLEXBUF_EXPORT`, replaces template header guards such as `FLEXBUF_FLEXBUF_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template. It does not replace CMake's `${PROJECT_NAME}` variable. Use `--dry-run` first, then run `python3 scripts/quality.py check` after renaming.

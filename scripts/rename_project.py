@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 
-DEFAULT_FROM = "flexbuffer"
+DEFAULT_FROM = "flexbuf"
 NAME_RE = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 SKIP_DIRS = {
     ".cache",
@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
         description="Rename the CPP-DEV template project placeholder."
     )
     parser.add_argument(
-        "new_flexbuffer",
+        "new_flexbuf",
         nargs="?",
         help=(
             "New lowercase snake_case project name. If omitted, the current "
@@ -40,7 +40,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--from",
-        dest="old_flexbuffer",
+        dest="old_flexbuf",
         default=DEFAULT_FROM,
         help=f"Existing placeholder name to replace. Defaults to {DEFAULT_FROM}.",
     )
@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def infer_flexbuffer(root: Path) -> str:
+def infer_flexbuf(root: Path) -> str:
     return root.name.lower().replace("-", "_")
 
 
@@ -92,12 +92,12 @@ def read_text(path: Path) -> str | None:
         return None
 
 
-def export_macro_name(flexbuffer: str) -> str:
-    return f"{flexbuffer.upper()}_EXPORT"
+def export_macro_name(flexbuf: str) -> str:
+    return f"{flexbuf.upper()}_EXPORT"
 
 
-def header_guard_name(flexbuffer: str) -> str:
-    return f"{flexbuffer.upper()}_{flexbuffer.upper()}_H_"
+def header_guard_name(flexbuf: str) -> str:
+    return f"{flexbuf.upper()}_{flexbuf.upper()}_H_"
 
 
 def replacement_pairs(old_name: str, new_name: str) -> list[tuple[str, str]]:
@@ -151,16 +151,16 @@ def rename_paths(
 
 def main() -> int:
     args = parse_args()
-    old_name = args.old_flexbuffer
+    old_name = args.old_flexbuf
 
     validate_name(old_name, "Old project name")
 
     root = Path(__file__).resolve().parents[1]
-    if args.new_flexbuffer is None:
-        new_name = infer_flexbuffer(root)
+    if args.new_flexbuf is None:
+        new_name = infer_flexbuf(root)
         print(f"Inferred new project name: {new_name}")
     else:
-        new_name = args.new_flexbuffer
+        new_name = args.new_flexbuf
 
     validate_name(new_name, "New project name")
 

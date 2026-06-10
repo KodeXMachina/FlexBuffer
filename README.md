@@ -77,11 +77,14 @@ Project names use lowercase English words separated by underscores.
 
 Examples of the naming style:
 
-- Project name: `{flexbuffer}`
+- Project name: `flexbuf`
 - Optional subproject name: `{optional_subproject}`
-- CMake package name: `{flexbuffer}`
-- Main target name: `{flexbuffer}`
-- Exported target name: `{flexbuffer}::{flexbuffer}`
+- CMake package name: `flexbuf`
+- Main target name: `flexbuf`
+- Exported target name: `flexbuf::flexbuf`
+- File/include basename: `flexbuf`
+- C++ namespace: `flexbuf`
+- Unix library artifact: `libflexbuf`
 
 Do not use PascalCase project names for new libraries.
 
@@ -94,21 +97,21 @@ Compiled libraries should use this structure:
 ├── CMakeLists.txt
 ├── cmake/
 ├── include/
-│   └── {flexbuffer}/
+│   └── {flexbuf}/
 │       └── {optional_subproject}/
 ├── src/
-└── test/
+└── tests/
 ```
 
 Rules:
 
-- Public headers must live under `include/{flexbuffer}/...`.
-- Optional public submodules must live under `include/{flexbuffer}/{optional_subproject}/...`.
+- Public headers must live under `include/{flexbuf}/...`.
+- Optional public submodules must live under `include/{flexbuf}/{optional_subproject}/...`.
 - Implementation files belong in `src/` and should use the `.cc` extension.
-- Test files belong in `test/`; use the singular directory name and the `.cc` extension for C++ test sources.
+- Test files belong in `tests/`; use the plural directory name and the `.cc` extension for C++ test sources.
 - Public headers should not be placed directly under the root of `include/`.
 
-Header-only libraries may remove `src/` and use an `INTERFACE` library target instead of a compiled target. Keep the same package name, alias target, install-tree include directory, and `find_package({flexbuffer} CONFIG REQUIRED)` contract. Use `flexbuffer_configure_cxx_interface_target(${PROJECT_NAME})` for the main header-only target; concrete test or tool executables should still use `flexbuffer_configure_cxx_target(...)`.
+Header-only libraries may remove `src/` and use an `INTERFACE` library target instead of a compiled target. Keep the same package name, alias target, install-tree include directory, and `find_package(flexbuf CONFIG REQUIRED)` contract. Use `flexbuf_configure_cxx_interface_target(${PROJECT_NAME})` for the main header-only target; concrete test or tool executables should still use `flexbuf_configure_cxx_target(...)`.
 
 ## C++ Style
 
@@ -118,31 +121,31 @@ This is not a strict, unmodified Google C++ style profile. The template accepts 
 
 Use Doxygen comments for public API documentation. Prefer `/** ... */` block comments placed on their own line immediately before the symbol they document. Avoid trailing Doxygen forms after declarations or statements.
 
-Use standard include guards for public headers. Do not use non-standard pragma-based header guards. Guard names should follow the installed include path, be uppercase, and end in `_H_`, such as `FLEXBUFFER_FLEXBUFFER_H_` for `include/flexbuffer/flexbuffer.h`.
+Use standard include guards for public headers. Do not use non-standard pragma-based header guards. Guard names should follow the installed include path, be uppercase, and end in `_H_`, such as `FLEXBUF_FLEXBUF_H_` for `include/flexbuf/flexbuf.h`.
 
 ## CMake Contract
 
-Every library should use CMake `3.21` or newer and build as strict C++20. Project-owned compiled C++ targets must set `CXX_STANDARD 20`, `CXX_STANDARD_REQUIRED ON`, and `CXX_EXTENSIONS OFF` so CMake emits `-std=c++20` rather than a compiler-extension mode such as `-std=gnu++20`. Header-only `INTERFACE` targets should use `target_compile_features(... INTERFACE cxx_std_20)` through `flexbuffer_configure_cxx_interface_target(...)`.
+Every library should use CMake `3.21` or newer and build as strict C++20. Project-owned compiled C++ targets must set `CXX_STANDARD 20`, `CXX_STANDARD_REQUIRED ON`, and `CXX_EXTENSIONS OFF` so CMake emits `-std=c++20` rather than a compiler-extension mode such as `-std=gnu++20`. Header-only `INTERFACE` targets should use `target_compile_features(... INTERFACE cxx_std_20)` through `flexbuf_configure_cxx_interface_target(...)`.
 
-The root CMake project should define one main library target named `{flexbuffer}` and an alias target named `{flexbuffer}::{flexbuffer}`. The alias target is the stable interface used by tests, examples, and downstream consumers.
+The root CMake project should define one main library target named `flexbuf` and an alias target named `flexbuf::flexbuf`. The alias target is the stable interface used by tests, examples, and downstream consumers.
 
 The template CMake files should prefer `${PROJECT_NAME}` for repeated project-dependent names, including targets, options, exported target files, config files, and install destinations. After creating a new library, changing the root `project(...)` name should update most generated CMake names automatically.
 
 Each library target must expose both build-tree and install-tree include paths. The build interface points at the source tree `include/` directory and the generated export-header include directory. The install interface points at the installed include directory.
 
-Compiled libraries must generate and install an export header named `<{flexbuffer}/export.h>`. Public API declarations exported from a shared library should use the generated `{PROJECT_NAME}_EXPORT` macro. Targets should use hidden default visibility so shared-library exports are intentional on Windows, macOS, and ELF platforms.
+Compiled libraries must generate and install an export header named `<{flexbuf}/export.h>`. Public API declarations exported from a shared library should use the generated `FLEXBUF_EXPORT` macro. Targets should use hidden default visibility so shared-library exports are intentional on Windows, macOS, and ELF platforms.
 
-Install support is required by default. The install option should be named `{flexbuffer}_INSTALL`, and its default should follow whether the project is the top-level CMake project. This keeps standalone builds installable while avoiding unwanted installs when the library is included through `add_subdirectory`.
+Install support is required by default. The install option should be named `flexbuf_INSTALL`, and its default should follow whether the project is the top-level CMake project. This keeps standalone builds installable while avoiding unwanted installs when the library is included through `add_subdirectory`.
 
-Installed libraries must be consumable through CMake package config mode. A downstream project should be able to use `find_package({flexbuffer} CONFIG REQUIRED)` and link against `{flexbuffer}::{flexbuffer}`.
+Installed libraries must be consumable through CMake package config mode. A downstream project should be able to use `find_package(flexbuf CONFIG REQUIRED)` and link against `flexbuf::flexbuf`.
 
 ## Testing
 
-The template uses GoogleTest as the baseline test framework. Tests should resolve it with `find_package(GTest CONFIG REQUIRED)` and `include(GoogleTest)` in the test `CMakeLists.txt`.
+The template uses GoogleTest as the baseline test framework. Tests should resolve it with `find_package(GTest CONFIG REQUIRED)` and `include(GoogleTest)` in the `tests/CMakeLists.txt` file.
 
 Link every GTest executable to `GTest::gtest_main` and register it with `gtest_discover_tests(<target>)`. Do not call `add_test(NAME ... COMMAND ...)` directly for GTest binaries.
 
-Place tests in `test/` using `.cc` files. Name cases `TEST(Suite, Case)` so CTest produces clear, unique names. Pass build-time-known inputs through `target_compile_definitions()` instead of per-test command-line arguments so discovery works without custom argv.
+Place tests in `tests/` using `.cc` files. Name cases `TEST(Suite, Case)` so CTest produces clear, unique names. Pass build-time-known inputs through `target_compile_definitions()` instead of per-test command-line arguments so discovery works without custom argv.
 
 ## Quality Commands
 
@@ -169,7 +172,7 @@ ctest --preset asan-ubsan
 
 After generating a repository from this template, rename the placeholder project before adding real code.
 
-Use `scripts/rename_project.py` with no argument to infer the project name from the generated repository directory. Use an explicit lowercase snake_case argument when the repository directory is not the desired CMake package name. The script updates file contents, updates generated export macro references such as `FLEXBUFFER_EXPORT`, updates template header guards such as `FLEXBUFFER_FLEXBUFFER_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template.
+Use `scripts/rename_project.py` with no argument to infer the project name from the generated repository directory. Use an explicit lowercase snake_case argument when the repository directory is not the desired CMake package name. The script updates file contents, updates generated export macro references such as `FLEXBUF_EXPORT`, updates template header guards such as `FLEXBUF_FLEXBUF_H_`, and renames placeholder paths such as the public include directory, source file, test file, and package config template.
 
 Run the script in dry-run mode first to inspect planned changes. Then run it without dry-run, replace the template README with the new library's own README, and finish by running the quality gate. See [scripts/README.md](scripts/README.md) for script usage details.
 
@@ -179,8 +182,8 @@ Installing a compiled library should install:
 
 - The compiled library target.
 - Public headers from `include/`.
-- The generated export header under `include/{flexbuffer}/export.h`.
-- Exported CMake targets under the package namespace `{flexbuffer}::`.
+- The generated export header under `include/{flexbuf}/export.h`.
+- Exported CMake targets under the package namespace `flexbuf::`.
 - A package config file for `find_package`.
 - A package version file matching the project version.
 
@@ -194,6 +197,6 @@ New libraries created from this template use GPL-3.0 by default. Treat GPL-3.0 a
 
 - Keep this template as a shared starting point, not a complete application framework.
 - Add project-specific dependencies only in the project that needs them.
-- Keep public API headers under `include/{flexbuffer}/...`.
+- Keep public API headers under `include/{flexbuf}/...`.
 - Treat `src/` as implementation detail.
 - Keep `.clang-format` and `.clang-tidy` inherited from this template unless a project has a clear reason to override them.

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(flexbuffer VERSION 0.1.0 LANGUAGES CXX)
+project(flexbuf VERSION 0.1.0 LANGUAGES CXX)
 
-include(cmake/flexbufferOptions.cmake)
-include(cmake/flexbufferCompiler.cmake)
-include(cmake/flexbufferInstall.cmake)
+include(cmake/flexbufOptions.cmake)
+include(cmake/flexbufCompiler.cmake)
+include(cmake/flexbufInstall.cmake)
 include(GenerateExportHeader)
 
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}.cc
+  src/flexbuf.cc
 )
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
@@ -17,7 +17,7 @@ target_compile_features(${PROJECT_NAME}
     cxx_std_20
 )
 
-flexbuffer_configure_cxx_target(${PROJECT_NAME})
+flexbuf_configure_cxx_target(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC
@@ -31,20 +31,21 @@ target_include_directories(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
+  OUTPUT_NAME flexbuf
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN ON
 )
 
 generate_export_header(${PROJECT_NAME}
   BASE_NAME ${PROJECT_NAME}
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/export.h
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/flexbuf/export.h
 )
 
 if(${PROJECT_NAME}_BUILD_TESTS)
   enable_testing()
-  add_subdirectory(test)
+  add_subdirectory(tests)
 endif()
 
 if(${PROJECT_NAME}_INSTALL)
-  flexbuffer_install_package(${PROJECT_NAME})
+  flexbuf_install_package(${PROJECT_NAME})
 endif()
